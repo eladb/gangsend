@@ -1,5 +1,18 @@
 var http = require('http');
 
+var history = [];
+
 http.createServer(function(req, res) {
-    res.end('Gangsend 1.0');
+
+	var all = '';	
+	req.on('data', function(data) {
+		all += data.toString();
+	});
+	
+	req.on('end', function() {
+		history.push(all);
+	    res.end(JSON.stringify(history, true, 2));
+	});
+    
+    
 }).listen(process.env.PORT || 5000);
