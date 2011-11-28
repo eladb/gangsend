@@ -1,18 +1,19 @@
 var http = require('http');
+var express = require('express');
+
+var app = express.createServer();
 
 var history = [];
 
-http.createServer(function(req, res) {
+app.use(express.bodyParser());
 
-	var all = '';	
-	req.on('data', function(data) {
-		all += data.toString();
-	});
-	
-	req.on('end', function() {
-		history.push(all);
-	    res.end(JSON.stringify(history, true, 2));
-	});
-    
-    
-}).listen(process.env.PORT || 5000);
+app.get(/.*/, function(req, res) {
+	res.send(history);
+})
+
+app.post(/.*/, function(req, res) {
+	history.push(req.body);
+	res.end();
+});
+
+app.listen(process.env.PORT || 5000);
